@@ -1,0 +1,48 @@
+// Ms Dynamics
+Xrm.Page.getAttribute('mobilephone')
+
+// JS
+function applyPhoneMask(context, field) {
+    var fieldValue = field.getValue();
+
+    fieldValue = fieldValue.replace(/\D/g, '');
+
+    if (fieldValue.length < 8 || fieldValue.length > 11) {
+        fieldValue = '';
+        alert('Número de Telefone inválido.');
+    }
+    else {
+        fieldValue = phoneMaskRegEx(fieldValue);
+    }
+    field.setValue(fieldValue);
+}
+
+function phoneMaskRegEx(v) { // good one for onchange
+    var r = v.replace(/\D/g, '');
+    r = r.replace(/^0/, '');
+    if (r.length == 11) {
+        r = r.replace(/^(\d\d)(\d{5})(\d{4}).*/, '($1) $2-$3');
+    } else if (r.length == 10) {
+        r = r.replace(/^(\d\d)(\d{4})(\d{4}).*/, '($1) $2-$3');
+    } else if (r.length == 9) {
+        r = r.replace(/^(\d{5})(\d{4}).*/, '$1-$2');
+    } else if (r.length == 8) {
+        r = r.replace(/^(\d{4})(\d{4}).*/, '$1-$2');
+    }
+    return r;
+}
+
+function phoneMaskRegEx(v) { // good one for onblur and onkeypress
+    var r = v.replace(/\D/g, '');
+    r = r.replace(/^0/, '');
+    if (r.length > 10) {
+        r = r.replace(/^(\d\d)(\d{5})(\d{4}).*/, '($1) $2-$3');
+    } else if (r.length > 5) {
+        r = r.replace(/^(\d\d)(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+    } else if (r.length > 2) {
+        r = r.replace(/^(\d\d)(\d{0,5})/, '($1) $2');
+    } else {
+        r = r.replace(/^(\d*)/, '($1');
+    }
+    return r;
+}
